@@ -328,9 +328,10 @@ public class Schedule extends Activity implements OnClickListener {
 						pAdapter.setTip(getResources().getString(R.string.pingwotuiju));
 						pAdapter.setImage1Id(R.drawable.pingwotuiju1);
 						pAdapter.setImage2Id(R.drawable.pingwotuiju2);
-					} else {
+					} else {//feiniao
 						pAdapter.setItemType(0);
 						pAdapter.setTip(getResources().getString(R.string.pingwoyalingfeiniao));
+						pAdapter.setImage1Id(R.drawable.pingwofeiniao);
 					}
 				} else {// gongertouji
 					pAdapter.setItemType(0);
