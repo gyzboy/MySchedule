@@ -50,25 +50,37 @@ public final class R {
         public static final int yalingwantuiju=0x7f020016;
         public static final int yangwojutui1=0x7f020017;
         public static final int yangwojutui2=0x7f020018;
-        public static final int zhituiyingla=0x7f020019;
+        public static final int yinti1=0x7f020019;
+        public static final int yinti2=0x7f02001a;
+        public static final int yinti3=0x7f02001b;
+        public static final int yinti4=0x7f02001c;
+        public static final int yinti5=0x7f02001d;
+        public static final int yinti6=0x7f02001e;
+        public static final int yinti7=0x7f02001f;
+        public static final int zhituiyingla=0x7f020020;
     }
     public static final class id {
         public static final int drawer_layout=0x7f080001;
+        public static final int image=0x7f08000b;
         public static final int iv_musle=0x7f080000;
         public static final int iv_pic1=0x7f080007;
         public static final int iv_pic2=0x7f080008;
+        public static final int list=0x7f08000c;
         public static final int ll_content=0x7f080002;
         public static final int lv_content=0x7f080004;
         public static final int lv_title=0x7f080003;
         public static final int navdrawer=0x7f080005;
         public static final int text=0x7f080006;
         public static final int tip=0x7f080009;
+        public static final int tip_pic=0x7f08000a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int activity_schedule=0x7f030001;
         public static final int item=0x7f030002;
         public static final int item_click=0x7f030003;
+        public static final int item_pic=0x7f030004;
+        public static final int layout_alert=0x7f030005;
     }
     public static final class string {
         public static final int app_name=0x7f060000;
@@ -87,6 +99,13 @@ public final class R {
         public static final int tuiju=0x7f060002;
         public static final int yalingjianbudun=0x7f06000e;
         public static final int yangwojutui=0x7f060009;
+        public static final int yintixiangshang1=0x7f060012;
+        public static final int yintixiangshang2=0x7f060013;
+        public static final int yintixiangshang3=0x7f060014;
+        public static final int yintixiangshang4=0x7f060015;
+        public static final int yintixiangshang5=0x7f060016;
+        public static final int yintixiangshang6=0x7f060017;
+        public static final int yintixiangshang7=0x7f060018;
         public static final int zhanlitizhong=0x7f06000f;
         public static final int zhituiyingla=0x7f060008;
     }

@@ -37,7 +37,7 @@ public class Schedule extends Activity implements OnClickListener {
 
 	private String[] jianbu = { "推举 4 * 10", "侧平举 3 * 10", "俯身侧平举 3 * 10", "耸肩 4 * 10" };
 	private String[] gongsantouji = { "颈后臂屈伸 4 * 10", "俯身臂屈伸 4 * 10" };
-	private String[] beibu = { "俯身双臂划船 4 * 10", "俯身单臂划船 4 * 10", "直腿硬拉 3 * 12" };
+	private String[] beibu = { "俯身双臂划船 4 * 10", "俯身单臂划船 4 * 10", "直腿硬拉 3 * 12","引体向上 10 * 3" };
 	private String[] fubu = { "仰卧举腿 3 * 15", "仰卧起坐 3 * 15" };
 
 	private String[] xiongbu = { "上斜推举 3 * 12", "平卧推举 4 * 10", "平卧飞鸟 3 * 12" };
@@ -59,6 +59,20 @@ public class Schedule extends Activity implements OnClickListener {
 	private DrawerArrowDrawable drawerArrow;
 	private ListView mDrawerList;
 
+	// 添加自定义的布局文件
+	private ListView list;
+	private PicAdapter pAdapter;
+	
+	private String[] yinti= null;
+	
+	private int[] yintiIds = new int[]{R.drawable.yinti1,
+			R.drawable.yinti2,
+			R.drawable.yinti3,
+			R.drawable.yinti4,
+			R.drawable.yinti5,
+			R.drawable.yinti6,
+			R.drawable.yinti7};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,6 +82,14 @@ public class Schedule extends Activity implements OnClickListener {
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setHomeButtonEnabled(true);
 
+		yinti = new String[]{getResources().getString(R.string.yintixiangshang1),
+				getResources().getString(R.string.yintixiangshang2),
+				getResources().getString(R.string.yintixiangshang3),
+				getResources().getString(R.string.yintixiangshang4),
+				getResources().getString(R.string.yintixiangshang5),
+				getResources().getString(R.string.yintixiangshang6),
+				getResources().getString(R.string.yintixiangshang7)};
+		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 		drawerArrow = new DrawerArrowDrawable(this) {
@@ -101,7 +123,7 @@ public class Schedule extends Activity implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				switch (position) {
-				case 0:
+				case 0: 
 					updateStatus(1);
 					break;
 				case 1:
@@ -225,100 +247,126 @@ public class Schedule extends Activity implements OnClickListener {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			// 添加自定义的布局文件
-			View layout = LayoutInflater.from(Schedule.this).inflate(R.layout.item_click, null);
-			TextView text = (TextView) layout.findViewById(R.id.tip);
-			ImageView image1 = (ImageView) layout.findViewById(R.id.iv_pic1);
-			ImageView image2 = (ImageView) layout.findViewById(R.id.iv_pic2);
+			
+			View layout = LayoutInflater.from(Schedule.this).inflate(R.layout.layout_alert, null);
+			list = (ListView) layout.findViewById(R.id.list);
+			pAdapter = new PicAdapter(Schedule.this);
+			list.setAdapter(pAdapter);
+			myDialog = new AlertDialog.Builder(Schedule.this).create();
+			myDialog.setCanceledOnTouchOutside(true);
+			myDialog.setCancelable(true);
+			myDialog.setView(layout, 0, 0, 0, 0);
+			
 			switch (tag) {
 			case 1:
 				if (mAdapter.getPos() == 0) {// jianbu
 					if (position == 0) {
-						text.setText(getResources().getString(R.string.tuiju));
-						Picasso.with(Schedule.this).load(R.drawable.tuiju1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.tuiju2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.tuiju));
+						pAdapter.setImage1Id(R.drawable.tuiju1);
+						pAdapter.setImage2Id(R.drawable.tuiju2);
 					} else if (position == 1) {
-						text.setText(getResources().getString(R.string.cepingju));
-						Picasso.with(Schedule.this).load(R.drawable.cepingju1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.cepingju2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.cepingju));
+						pAdapter.setImage1Id(R.drawable.cepingju1);
+						pAdapter.setImage2Id(R.drawable.cepingju2);
 					} else if (position == 2) {
-						text.setText(getResources().getString(R.string.fushencepingju));
-						Picasso.with(Schedule.this).load(R.drawable.fushencepingju1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.fushencepingju2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.fushencepingju));
+						pAdapter.setImage1Id(R.drawable.fushencepingju1);
+						pAdapter.setImage2Id(R.drawable.fushencepingju2);
 					} else {
-						text.setText(getResources().getString(R.string.songjian));
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.songjian));
 					}
 				} else {// gongsantouji
 					if (position == 0) {
-						text.setText(getResources().getString(R.string.jinghouqubishen));
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.jinghouqubishen));
 					} else {
-						Picasso.with(Schedule.this).load(R.drawable.fushenbiqushen).into(image1);
+						pAdapter.setItemType(0);
+						pAdapter.setImage1Id(R.drawable.fushenbiqushen);
 					}
 				}
 				break;
 			case 2:
 				if (mAdapter.getPos() == 0) {// beibu
 					if (position == 0 || position == 1) {
-						text.setText(getResources().getString(R.string.fushendanbihuachuan));
-						Picasso.with(Schedule.this).load(R.drawable.fushendanbihuachuan).into(image1);
-					} else {
-						text.setText(getResources().getString(R.string.zhituiyingla));
-						Picasso.with(Schedule.this).load(R.drawable.zhituiyingla).into(image1);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.fushendanbihuachuan));
+						pAdapter.setImage1Id(R.drawable.fushendanbihuachuan);
+					} else if(position == 2){
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.zhituiyingla));
+						pAdapter.setImage1Id(R.drawable.zhituiyingla);
+					}else{
+						pAdapter.setItemType(1);
+						pAdapter.setTips(yinti);
+						pAdapter.setImageIds(yintiIds);
 					}
 				} else {// fubu
 					if (position == 0) {
-						text.setText(getResources().getString(R.string.yangwojutui));
-						Picasso.with(Schedule.this).load(R.drawable.yangwojutui1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.yangwojutui2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.yangwojutui));
+						pAdapter.setImage1Id(R.drawable.yangwojutui1);
+						pAdapter.setImage2Id(R.drawable.yangwojutui2);
 					} else {
-						text.setText("仰卧起坐");
+						pAdapter.setItemType(0);
+						pAdapter.setTip("仰卧起坐");
 					}
 				}
 				break;
 			case 3:
 				if (mAdapter.getPos() == 0) {// xiongbu
 					if (position == 0) {
-						text.setText(getResources().getString(R.string.shangxietuiju));
-						Picasso.with(Schedule.this).load(R.drawable.shangxietuiju1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.shangxietuiju2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.shangxietuiju));
+						pAdapter.setImage1Id(R.drawable.shangxietuiju1);
+						pAdapter.setImage2Id(R.drawable.shangxietuiju2);
 					} else if (position == 1) {
-						text.setText(getResources().getString(R.string.pingwotuiju));
-						Picasso.with(Schedule.this).load(R.drawable.pingwotuiju1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.pingwotuiju2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.pingwotuiju));
+						pAdapter.setImage1Id(R.drawable.pingwotuiju1);
+						pAdapter.setImage2Id(R.drawable.pingwotuiju2);
 					} else {
-						text.setText(getResources().getString(R.string.pingwoyalingfeiniao));
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.pingwoyalingfeiniao));
 					}
 				} else {// gongertouji
-					text.setText(getResources().getString(R.string.danbiyalingwanju));
-					Picasso.with(Schedule.this).load(R.drawable.danbijiaotiwanju).into(image1);
+					pAdapter.setItemType(0);
+					pAdapter.setTip(getResources().getString(R.string.danbiyalingwanju));
+					pAdapter.setImage1Id(R.drawable.danbijiaotiwanju);
 				}
 				break;
 			case 4:
 				if (mAdapter.getPos() == 0) {// datui
 					if (position == 0) {
-						Picasso.with(Schedule.this).load(R.drawable.yalingshendun).into(image1);
+						pAdapter.setItemType(0);
+						pAdapter.setImage1Id(R.drawable.yalingshendun);
 					} else if (position == 1) {
-						text.setText(getResources().getString(R.string.yalingjianbudun));
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.yalingjianbudun));
 					} else {
-						Picasso.with(Schedule.this).load(R.drawable.yalingwantuiju).into(image1);
+						pAdapter.setItemType(0);
+						pAdapter.setImage1Id(R.drawable.yalingwantuiju);
 					}
 				} else if (mAdapter.getPos() == 1) {// xiaotui
-					text.setText(getResources().getString(R.string.zhanlitizhong));
+					pAdapter.setItemType(0);
+					pAdapter.setTip(getResources().getString(R.string.zhanlitizhong));
 				} else {// fubu
 					if (position == 0) {
-						text.setText(getResources().getString(R.string.yangwojutui));
-						Picasso.with(Schedule.this).load(R.drawable.yangwojutui1).into(image1);
-						Picasso.with(Schedule.this).load(R.drawable.yangwojutui2).into(image2);
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.yangwojutui));
+						pAdapter.setImage1Id(R.drawable.yangwojutui1);
+						pAdapter.setImage2Id(R.drawable.yangwojutui2);
 					} else {
-						text.setText("仰卧起坐");
+						pAdapter.setItemType(0);
+						pAdapter.setTip("仰卧起坐");
 					}
 				}
 				break;
 			}
-			myDialog = new AlertDialog.Builder(Schedule.this).create();
-			myDialog.setCanceledOnTouchOutside(true);
-			myDialog.setCancelable(true);
-			myDialog.setView(layout, 0, 0, 0, 0);
+			pAdapter.notifyDataSetChanged();
 			myDialog.show();
 		}
 	}
