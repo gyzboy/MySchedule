@@ -8,6 +8,8 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 public class MainActivity extends Activity implements OnTouchListener,OnGestureListener{
@@ -17,6 +19,9 @@ public class MainActivity extends Activity implements OnTouchListener,OnGestureL
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
 		ImageView image = (ImageView) findViewById(R.id.iv_musle);
 		mDetector = new GestureDetector(MainActivity.this, this);

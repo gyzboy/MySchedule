@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -14,14 +15,15 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import com.ldrawer.lib.ActionBarDrawerToggle;
 import com.ldrawer.lib.DrawerArrowDrawable;
-import com.squareup.picasso.Picasso;
 
 public class Schedule extends Activity implements OnClickListener {
 
@@ -37,7 +39,7 @@ public class Schedule extends Activity implements OnClickListener {
 
 	private String[] jianbu = { "推举 4 * 10", "侧平举 3 * 10", "俯身侧平举 3 * 10", "耸肩 4 * 10" };
 	private String[] gongsantouji = { "颈后臂屈伸 4 * 10", "俯身臂屈伸 4 * 10" };
-	private String[] beibu = { "俯身双臂划船 4 * 10", "俯身单臂划船 4 * 10", "直腿硬拉 3 * 12","引体向上 10 * 3" };
+	private String[] beibu = { "俯身双臂划船 4 * 10", "俯身单臂划船 4 * 10", "直腿硬拉 3 * 12", "引体向上 10 * 3" };
 	private String[] fubu = { "仰卧举腿 3 * 15", "仰卧起坐 3 * 15" };
 
 	private String[] xiongbu = { "上斜推举 3 * 12", "平卧推举 4 * 10", "平卧飞鸟 3 * 12" };
@@ -50,6 +52,7 @@ public class Schedule extends Activity implements OnClickListener {
 	private MyAdapter cAdapter;
 
 	private LinearLayout ll_content;
+	private LinearLayout ll_video;
 
 	private int tag = 0;
 	private AlertDialog myDialog = null;
@@ -62,17 +65,15 @@ public class Schedule extends Activity implements OnClickListener {
 	// 添加自定义的布局文件
 	private ListView list;
 	private PicAdapter pAdapter;
-	
-	private String[] yinti= null;
-	
-	private int[] yintiIds = new int[]{R.drawable.yinti1,
-			R.drawable.yinti2,
-			R.drawable.yinti3,
-			R.drawable.yinti4,
-			R.drawable.yinti5,
-			R.drawable.yinti6,
-			R.drawable.yinti7};
-	
+	private VideoView vvShow = null;
+	private Button btn_control;
+	private MediaController mediaController;
+
+	private String[] yinti = null;
+
+	private int[] yintiIds = new int[] { R.drawable.yinti1, R.drawable.yinti2, R.drawable.yinti3, R.drawable.yinti4, R.drawable.yinti5, R.drawable.yinti6,
+			R.drawable.yinti7 };
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,16 +83,27 @@ public class Schedule extends Activity implements OnClickListener {
 		ab.setDisplayHomeAsUpEnabled(true);
 		ab.setHomeButtonEnabled(true);
 
-		yinti = new String[]{getResources().getString(R.string.yintixiangshang1),
-				getResources().getString(R.string.yintixiangshang2),
-				getResources().getString(R.string.yintixiangshang3),
-				getResources().getString(R.string.yintixiangshang4),
-				getResources().getString(R.string.yintixiangshang5),
-				getResources().getString(R.string.yintixiangshang6),
-				getResources().getString(R.string.yintixiangshang7)};
-		
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		yinti = new String[] { getResources().getString(R.string.yintixiangshang1), getResources().getString(R.string.yintixiangshang2),
+				getResources().getString(R.string.yintixiangshang3), getResources().getString(R.string.yintixiangshang4),
+				getResources().getString(R.string.yintixiangshang5), getResources().getString(R.string.yintixiangshang6),
+				getResources().getString(R.string.yintixiangshang7) };
 
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		vvShow = (VideoView) findViewById(R.id.video);
+		btn_control = (Button) findViewById(R.id.btn_control);
+		ll_video = (LinearLayout) findViewById(R.id.ll_video);
+		btn_control.setOnClickListener(this);
+		mediaController = new MediaController(this){
+			@Override
+			public boolean dispatchTouchEvent(MotionEvent ev) {
+				if(mediaController.isShowing()){
+					mediaController.hide();
+				}else{
+					mediaController.show();
+				}
+				return super.dispatchTouchEvent(ev);
+			}
+		}; //用于进度条显示
 		drawerArrow = new DrawerArrowDrawable(this) {
 			@Override
 			public boolean isLayoutRtl() {
@@ -115,15 +127,16 @@ public class Schedule extends Activity implements OnClickListener {
 
 		mDrawerList = (ListView) findViewById(R.id.navdrawer);
 
-		String[] values = new String[] { "周一", "周三", "周四", "周六", "显示图片" };
+		String[] values = new String[] { "周一", "周三", "周四", "周六", "显示图片", "播放视频" };
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
 		mDrawerList.setAdapter(adapter);
 		mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				image.setVisibility(View.INVISIBLE);
 				switch (position) {
-				case 0: 
+				case 0:
 					updateStatus(1);
 					break;
 				case 1:
@@ -136,8 +149,23 @@ public class Schedule extends Activity implements OnClickListener {
 					updateStatus(4);
 					break;
 				case 4:
+					image.setImageResource(R.drawable.musle);
 					image.setVisibility(View.VISIBLE);
 					ll_content.setVisibility(View.INVISIBLE);
+					ll_video.setVisibility(View.INVISIBLE);
+					break;
+				case 5:
+					image.setVisibility(View.INVISIBLE);
+					ll_content.setVisibility(View.INVISIBLE);
+					ll_video.setVisibility(View.VISIBLE);
+					String uri = "android.resource://" + getPackageName() + "/" + R.raw.videoviewdemo;
+					vvShow.setVideoURI(Uri.parse(uri));
+					// 设置VideView与MediaController建立关联  
+					vvShow.setMediaController(mediaController);  
+		            // 设置MediaController与VideView建立关联  
+		            mediaController.setMediaPlayer(vvShow);
+		         // 使用0的话就一直显示直到调用hide()  
+                    mediaController.show(0);  
 					break;
 				}
 				mDrawerLayout.closeDrawer(mDrawerList);
@@ -195,7 +223,16 @@ public class Schedule extends Activity implements OnClickListener {
 			image.setVisibility(View.INVISIBLE);
 			ll_content.setVisibility(View.VISIBLE);
 			break;
+		case R.id.btn_control:
+			// 让VideoView获取焦点  
+			vvShow.requestFocus(); 
+			if (vvShow.isPlaying()) {
+				vvShow.stopPlayback();
+			} else {
+				vvShow.start();
+			}
 
+			break;
 		}
 	}
 
@@ -247,7 +284,7 @@ public class Schedule extends Activity implements OnClickListener {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			
+
 			View layout = LayoutInflater.from(Schedule.this).inflate(R.layout.layout_alert, null);
 			list = (ListView) layout.findViewById(R.id.list);
 			pAdapter = new PicAdapter(Schedule.this);
@@ -256,7 +293,7 @@ public class Schedule extends Activity implements OnClickListener {
 			myDialog.setCanceledOnTouchOutside(true);
 			myDialog.setCancelable(true);
 			myDialog.setView(layout, 0, 0, 0, 0);
-			
+
 			switch (tag) {
 			case 1:
 				if (mAdapter.getPos() == 0) {// jianbu
@@ -283,6 +320,7 @@ public class Schedule extends Activity implements OnClickListener {
 					if (position == 0) {
 						pAdapter.setItemType(0);
 						pAdapter.setTip(getResources().getString(R.string.jinghouqubishen));
+						pAdapter.setImage1Id(R.drawable.jinghouqubishen);
 					} else {
 						pAdapter.setItemType(0);
 						pAdapter.setImage1Id(R.drawable.fushenbiqushen);
@@ -295,11 +333,11 @@ public class Schedule extends Activity implements OnClickListener {
 						pAdapter.setItemType(0);
 						pAdapter.setTip(getResources().getString(R.string.fushendanbihuachuan));
 						pAdapter.setImage1Id(R.drawable.fushendanbihuachuan);
-					} else if(position == 2){
+					} else if (position == 2) {
 						pAdapter.setItemType(0);
 						pAdapter.setTip(getResources().getString(R.string.zhituiyingla));
 						pAdapter.setImage1Id(R.drawable.zhituiyingla);
-					}else{
+					} else {
 						pAdapter.setItemType(1);
 						pAdapter.setTips(yinti);
 						pAdapter.setImageIds(yintiIds);
@@ -328,15 +366,21 @@ public class Schedule extends Activity implements OnClickListener {
 						pAdapter.setTip(getResources().getString(R.string.pingwotuiju));
 						pAdapter.setImage1Id(R.drawable.pingwotuiju1);
 						pAdapter.setImage2Id(R.drawable.pingwotuiju2);
-					} else {//feiniao
+					} else {// feiniao
 						pAdapter.setItemType(0);
 						pAdapter.setTip(getResources().getString(R.string.pingwoyalingfeiniao));
 						pAdapter.setImage1Id(R.drawable.pingwofeiniao);
 					}
 				} else {// gongertouji
-					pAdapter.setItemType(0);
-					pAdapter.setTip(getResources().getString(R.string.danbiyalingwanju));
-					pAdapter.setImage1Id(R.drawable.danbijiaotiwanju);
+					if (position == 0 || position == 1) {
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.danbiyalingwanju));
+						pAdapter.setImage1Id(R.drawable.danbijiaotiwanju);
+					} else {// 侧弯举
+						pAdapter.setItemType(0);
+						pAdapter.setTip(getResources().getString(R.string.cewanju));
+						pAdapter.setImage1Id(R.drawable.cewanju);
+					}
 				}
 				break;
 			case 4:
@@ -402,5 +446,10 @@ public class Schedule extends Activity implements OnClickListener {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 }

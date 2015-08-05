@@ -1,9 +1,5 @@
 package com.example.myschedule;
 
-import java.util.List;
-
-import com.squareup.picasso.Picasso;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class PicAdapter extends BaseAdapter {
 	
@@ -92,14 +90,17 @@ public class PicAdapter extends BaseAdapter {
 		if(itemType == 0){
 			holder.text.setText(tip);
 			if(image1Id != 0){
-				Picasso.with(mContext).load(image1Id).into(holder.image1);
+				Glide.with(mContext).load(image1Id)
+		        .crossFade().into(holder.image1);
 				if(image2Id != 0){
-					Picasso.with(mContext).load(image2Id).into(holder.image2);
+					Glide.with(mContext).load(image2Id)
+			        .crossFade().into(holder.image2);
 				}
 			}
 		}else{
 			holder.text.setText(tips[arg0]);
-			Picasso.with(mContext).load(imageIds[arg0]).into(holder.image);
+			Glide.with(mContext).load(imageIds[arg0])
+	        .crossFade().into(holder.image);
 		}
 		return arg1;
 	}
