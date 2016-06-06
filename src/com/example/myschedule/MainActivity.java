@@ -30,7 +30,6 @@ public class MainActivity extends Activity implements OnTouchListener,OnGestureL
 
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO 
 		return false;
 	}
 
