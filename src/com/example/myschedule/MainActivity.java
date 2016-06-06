@@ -36,7 +36,6 @@ public class MainActivity extends Activity implements OnTouchListener,OnGestureL
 
 	@Override
 	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
